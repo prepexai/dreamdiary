@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Capacitor } from '@capacitor/core';
 import OvalLabel from './components/OvalLabel';
 import DreamInput from './components/DreamInput';
 import InterpretationDisplay from './components/InterpretationDisplay';
@@ -18,7 +19,11 @@ export default function Home() {
     setError(null);
 
     try {
-      const response = await fetch('/api/interpret', {
+      const apiUrl = Capacitor.isNativePlatform() 
+        ? 'https://dreamdiary.co/api/interpret' 
+        : '/api/interpret';
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

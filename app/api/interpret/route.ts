@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export async function OPTIONS(request: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { dream } = await request.json();
@@ -7,7 +17,7 @@ export async function POST(request: NextRequest) {
     if (!dream || typeof dream !== 'string' || dream.trim().length === 0) {
       return NextResponse.json(
         { error: 'Please provide a dream to interpret' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -15,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!apiKey) {
       return NextResponse.json(
         { error: 'API configuration error' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -31,7 +41,7 @@ export async function POST(request: NextRequest) {
           {
             role: 'system',
             content: `You are a mystical, insightful dream interpreter with deep knowledge of psychology, symbolism, and the subconscious mind. 
-
+            
 Your interpretations should be:
 - Poetic yet profound
 - Grounded in Jungian psychology and universal symbolism
@@ -58,7 +68,7 @@ Keep your interpretation between 200-300 words. Use evocative language that feel
       console.error('xAI API error:', errorData);
       return NextResponse.json(
         { error: 'Failed to interpret dream. Please try again.' },
-        { status: response.status }
+        { status: response.status, headers: corsHeaders }
       );
     }
 
@@ -68,17 +78,16 @@ Keep your interpretation between 200-300 words. Use evocative language that feel
     if (!interpretation) {
       return NextResponse.json(
         { error: 'No interpretation received' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
-    return NextResponse.json({ interpretation });
+    return NextResponse.json({ interpretation }, { headers: corsHeaders });
   } catch (error) {
     console.error('Error interpreting dream:', error);
     return NextResponse.json(
       { error: 'An unexpected error occurred' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
-
