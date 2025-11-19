@@ -54,95 +54,88 @@ npm run dev
 
 ## Deployment
 
-This project is designed to be deployed on a Hetzner VPS at dreamdiary.co.
+This project is deployed on a Hetzner VPS at **https://dreamdiary.co**
 
-### Deployment Steps
+### Quick Deploy
 
-1. Push to GitHub:
+For subsequent deployments, simply run:
+
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin <your-github-repo>
-git push -u origin main
+./deploy.sh
 ```
 
-2. SSH into your Hetzner server:
+This script will:
+1. Commit and push changes to GitHub
+2. SSH into the server
+3. Pull latest changes
+4. Install dependencies
+5. Build the application
+6. Restart the PM2 process
+
+### Initial Deployment (Already Complete)
+
+The application has been deployed with the following setup:
+
+- **Server**: Hetzner VPS (178.156.161.136)
+- **Domain**: dreamdiary.co (with SSL via Let's Encrypt)
+- **Process Manager**: PM2 (auto-restart on server reboot)
+- **Web Server**: Nginx (reverse proxy)
+- **Node.js**: v20.19.5
+- **Environment**: Production with xAI API key configured
+
+### Manual Deployment Steps (Reference)
+
+If you need to deploy manually or to a new server:
+
+1. **Provision Server**:
 ```bash
+# Install Node.js, PM2, Nginx, Git, Certbot
 ssh -i hetzner_key root@<server-ip>
-```
-
-3. Install dependencies on the server:
-```bash
-# Install Node.js
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-apt-get install -y nodejs
-
-# Install PM2
+apt-get install -y nodejs nginx git certbot python3-certbot-nginx
 npm install -g pm2
-
-# Install Nginx
-apt-get install -y nginx
-
-# Install Git
-apt-get install -y git
 ```
 
-4. Clone and setup the project:
+2. **Clone and Build**:
 ```bash
 cd /var/www
-git clone <your-github-repo> dreamdiary
+git clone https://github.com/prepexai/dreamdiary.git
 cd dreamdiary
+echo "XAI_API_KEY=your_key_here" > .env
 npm install
-```
-
-5. Create production environment file:
-```bash
-echo "XAI_API_KEY=your_xai_api_key_here" > .env
-```
-
-6. Build and start the application:
-```bash
 npm run build
+```
+
+3. **Start with PM2**:
+```bash
 pm2 start npm --name "dream-diary" -- start
 pm2 save
 pm2 startup
 ```
 
-7. Configure Nginx:
+4. **Configure Nginx**:
 ```bash
-nano /etc/nginx/sites-available/dreamdiary.co
-```
-
-Add the following configuration:
-```nginx
-server {
-    listen 80;
-    server_name dreamdiary.co www.dreamdiary.co;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-Enable the site:
-```bash
+# Create config at /etc/nginx/sites-available/dreamdiary.co
+# Enable site and restart Nginx
 ln -s /etc/nginx/sites-available/dreamdiary.co /etc/nginx/sites-enabled/
-nginx -t
 systemctl restart nginx
 ```
 
-8. Setup SSL with Certbot:
+5. **Setup SSL**:
 ```bash
-apt-get install -y certbot python3-certbot-nginx
-certbot --nginx -d dreamdiary.co -d www.dreamdiary.co
+certbot --nginx -d dreamdiary.co -d www.dreamdiary.co --non-interactive --agree-tos --email admin@dreamdiary.co --redirect
+```
+
+### Monitoring
+
+Check application status:
+```bash
+ssh -i hetzner_key root@178.156.161.136 'pm2 status'
+```
+
+View logs:
+```bash
+ssh -i hetzner_key root@178.156.161.136 'pm2 logs dream-diary'
 ```
 
 ## Project Structure
