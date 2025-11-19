@@ -15,28 +15,41 @@ export default function OvalLabel({ children, className = '', animate = true }: 
   const animationProps = animate ? {
     initial: { opacity: 0, scale: 0.95 },
     animate: { opacity: 1, scale: 1 },
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }
+    transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] }
   } : {};
 
   return (
     <Component
-      className={`relative ${className}`}
+      className={`relative ${className} flex items-center justify-center p-4`}
       {...animationProps}
     >
-      {/* Outer oval border */}
-      <div className="relative border-2 border-black rounded-[50%] px-8 py-12 md:px-16 md:py-20 lg:px-24 lg:py-28">
-        {/* Inner content */}
-        <div className="relative z-10">
-          {children}
-        </div>
+      {/* The Oval Container */}
+      <div className="relative w-full max-w-2xl aspect-[4/3] md:aspect-[16/10] flex items-center justify-center">
         
-        {/* Decorative corner elements - Diptyque style */}
-        <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-black opacity-30" />
-        <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-black opacity-30" />
-        <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-black opacity-30" />
-        <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-black opacity-30" />
+        {/* Main thick border */}
+        <div className="absolute inset-0 border-[3px] border-black rounded-[50%] shadow-sm" />
+        
+        {/* Inner thin border */}
+        <div className="absolute inset-2 border border-black rounded-[50%]" />
+        
+        {/* Ornamental top/bottom markers */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2">
+            <div className="w-2 h-2 bg-black rounded-full" />
+        </div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white px-2">
+            <div className="w-2 h-2 bg-black rounded-full" />
+        </div>
+
+        {/* Content Container - centered in the oval */}
+        <div className="relative z-10 px-12 py-16 md:px-20 md:py-24 text-center w-full h-full flex flex-col items-center justify-center overflow-hidden rounded-[50%]">
+            {/* Background texture inside the oval */}
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px]" />
+            
+            <div className="relative z-20 w-full max-w-md">
+                {children}
+            </div>
+        </div>
       </div>
     </Component>
   );
 }
-

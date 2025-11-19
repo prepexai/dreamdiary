@@ -6,6 +6,7 @@ import OvalLabel from './components/OvalLabel';
 import DreamInput from './components/DreamInput';
 import InterpretationDisplay from './components/InterpretationDisplay';
 import LoadingAnimation from './components/LoadingAnimation';
+import MysticalBackground from './components/MysticalBackground';
 
 export default function Home() {
   const [interpretation, setInterpretation] = useState<string | null>(null);
@@ -45,53 +46,57 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
+    <main className="min-h-screen relative flex flex-col items-center justify-center p-4 md:p-8 overflow-hidden">
+      {/* Mystical Background */}
+      <MysticalBackground />
+
       {/* Hero Section */}
-      <div className="w-full max-w-6xl mx-auto text-center mb-12 md:mb-16">
+      <div className="relative z-10 w-full max-w-6xl mx-auto text-center mb-8 md:mb-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl mb-6 tracking-tight">
+          <h1 className="font-serif text-5xl md:text-8xl lg:text-9xl mb-6 tracking-tighter">
             Dream Diary
           </h1>
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-24 h-px bg-black mx-auto mb-6"
+            transition={{ duration: 1, delay: 0.5 }}
+            className="w-32 h-0.5 bg-black mx-auto mb-8"
           />
-          <p className="font-sans text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
-            Unlock the secrets of your subconscious. Share your dreams and discover their hidden meanings
-            through the lens of ancient wisdom and modern insight.
+          <p className="font-serif italic text-lg md:text-2xl text-gray-800 max-w-2xl mx-auto leading-relaxed tracking-wide">
+            Unlock the esoteric wisdom of your subconscious.
           </p>
         </motion.div>
       </div>
 
       {/* Main Interaction Area */}
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="relative z-10 w-full max-w-4xl mx-auto">
         <OvalLabel>
-          <div className="text-center mb-8">
-            <h2 className="font-serif text-2xl md:text-3xl mb-3">
-              What did you dream?
-            </h2>
-            <p className="font-sans text-sm text-gray-600">
-              Describe your dream in as much detail as you remember
-            </p>
-          </div>
-          
-          <DreamInput onSubmit={handleInterpretDream} isLoading={isLoading} />
+          <div className="w-full flex flex-col h-full justify-center">
+            <div className="text-center mb-6">
+              <h2 className="font-serif text-2xl md:text-3xl mb-2 tracking-wide">
+                Somnium
+              </h2>
+              <p className="font-sans text-xs md:text-sm text-gray-500 uppercase tracking-[0.2em]">
+                Tell us your dream
+              </p>
+            </div>
+            
+            <DreamInput onSubmit={handleInterpretDream} isLoading={isLoading} />
 
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 border-2 border-red-600 bg-red-50 text-red-800 text-center font-sans text-sm"
-            >
-              {error}
-            </motion.div>
-          )}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 text-red-800 text-center font-serif text-sm italic"
+              >
+                {error}
+              </motion.div>
+            )}
+          </div>
         </OvalLabel>
       </div>
 
@@ -99,11 +104,11 @@ export default function Home() {
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="mt-16 text-center"
+        transition={{ delay: 1.5, duration: 0.8 }}
+        className="relative z-10 mt-16 text-center"
       >
-        <p className="font-sans text-xs text-gray-500 tracking-wider uppercase">
-          Powered by AI · Inspired by the Subconscious
+        <p className="font-sans text-[10px] md:text-xs text-gray-400 tracking-[0.3em] uppercase">
+          Est. 2024 · Artificial Intuition
         </p>
       </motion.footer>
 
