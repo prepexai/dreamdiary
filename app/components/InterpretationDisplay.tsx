@@ -21,7 +21,7 @@ export default function InterpretationDisplay({ interpretation, onClose }: Inter
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as any }}
         className="bg-background border-2 border-black max-w-2xl w-full max-h-[80vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
